@@ -3,16 +3,17 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
-// add more includes
 
 #define NUM_OF_FILES 10
+#define NAME_INDEX 0
+#define FLAG_INDEX 1
 
 // function prototypes
 void PrintCityData();
 
 char *Concat(char *string1, char *string2); 
 
-void ProcessFile(char *fileName);
+void ProcessFile(char *filePath);
 
 // draft, will have parameters later
 void PrintCityData()
@@ -51,46 +52,60 @@ char *Concat(char *string1, char *string2)
     return newString;
 }
 
-void ProcessFile(char *fileName)
-{   
-    int fd = open(fileName, O_RDWR | O_CREAT, 0777);
+void ProcessFile(char *filePath)
+{
+    printf("opening %s\n", filePath);
 
-    if(fd == -1)
+    FILE *fd;
+    char *line = NULL;
+    size_t lineLength = 0;
+    ssize_t getlineResult;
+    int linesRead = 0;
+    
+    fd = fopen(filePath,"r");
+
+    // check error on file opening
+    if(fd == NULL)
     {
         printf("error opening file\n");
         exit(1);
     }
 
-    printf("Successfully ran ProcessFile\n");
+    // read each line 
+    while((getlineResult = getline(&line, &lineLength, fd)) != -1) // while result of getline() is not -1
+    {
+        //printf("%s", line);
+        linesRead++;
+    }
+    free(line); 
+
+    printf("lines read: %d\n", linesRead);
+    
+    printf("\n");
+
 }
 
 int main(int argc, char *argv[])
 {
     int multithreading = 0;
    
-    // ----- for debugging -----
-    printf("argc: %d\n", argc);
-    printf("\n");
-    for(int i = 0; i < argc; i++)
-    {
-        printf("%s ", argv[i]);
-    }
-    printf("\n");
-    // ------------------------
-    
     if(argc > 2)
     {
-        printf("Too many arguments\n");
+        printf("Usage:\t%s (single threaded)\n\t%s -m (multi threaded)\n", argv[NAME_INDEX], argv[NAME_INDEX]);
         exit(1);
     }
 
-
+    // if there is a flag
     if(argc == 2)
     {
-        if(strcmp(argv[1], "-m") == 0)
+        if(strcmp(argv[FLAG_INDEX], "-m") == 0)
         {
             multithreading = 1;
             printf("running with multithreading option\n");
+        }
+        else
+        {
+            printf("flag %s not recognized", argv[FLAG_INDEX]);
         }
     }
 
@@ -110,14 +125,8 @@ int main(int argc, char *argv[])
     };
 
     char *fileNames[NUM_OF_FILES] = {"Montreal.dat","Halifax.dat","Edmonton.dat","Charlottetown.dat", "Ottawa.dat","Quebec.dat","Toronto.dat","Vancouver.dat","Victoria.dat", "Winnipeg.dat"};
-    char *filepath = "data_files";
+    char *filepath = "data_files/";
     int fdList[NUM_OF_FILES];
-
-    //print file names
-    for(int i = 0; i < NUM_OF_FILES; i++)
-    {
-        printf("%s\n", fileNames[i]);
-    }
     
     // open file
     for(int i = 0; i < NUM_OF_FILES; i++)
