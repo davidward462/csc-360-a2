@@ -6,7 +6,7 @@
 
 #define NUM_OF_FILES 10
 #define NAME_INDEX 0
-#define FLAG_INDEX 1
+#define OPTION_INDEX 1
 
 // function prototypes
 void PrintCityData();
@@ -95,17 +95,17 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    // if there is a flag
+    // if there is a option
     if(argc == 2)
     {
-        if(strcmp(argv[FLAG_INDEX], "-m") == 0)
+        if(strcmp(argv[OPTION_INDEX], "-m") == 0)
         {
             multithreading = 1;
             printf("running with multithreading option\n");
         }
         else
         {
-            printf("flag %s not recognized", argv[FLAG_INDEX]);
+            printf("option '%s' not recognized\n", argv[OPTION_INDEX]);
         }
     }
 
