@@ -55,6 +55,9 @@ void ProcessFile(char *filePath)
     size_t lineLength = 0;
     ssize_t getlineResult;
     int linesRead = 0;
+    const char *delim = "\t";
+    char *saveptr;
+    char *token;
     
     fd = fopen(filePath,"r"); // "r" means open file for reading
 
@@ -68,9 +71,31 @@ void ProcessFile(char *filePath)
     // read each line 
     while((getlineResult = getline(&line, &lineLength, fd)) != -1) // while result of getline() is not -1
     {
-        //printf("%s", line);
+        if((linesRead % 100) == 0)
+        {
+            printf(".");
+        }
+        
+        // parse line
+        
+        // get first token
+        token = strtok_r(line, delim, &saveptr);
+
+        if(token = NULL)
+        {
+            printf("empty line\n");
+        }
+
+        while(token) // while token not null
+        {
+            // parse rest of token
+            token = strtok_r(NULL, delim, &saveptr);
+        }
+
         linesRead++;
     }
+
+    printf("\n");
 
     free(line); 
 
@@ -138,12 +163,18 @@ int main(int argc, char *argv[])
     }
 
    
-    // open file
+    // open and process files
     for(int i = 0; i < NUM_OF_FILES; i++)
     {
-        char *fileName = Concat(filepath, fileNames[i]);
+        char *fileName = Concat(filepath, fileNames[i]); // create path
+
+        // TODO: add multithreading
+        // this function is probably the one which will be called in pthread()
         ProcessFile(fileName);
     }
+
+    // for testing
+    PrintCityData("Victoria", -3.4, 35.7, 10.1, 29012);
 
     return 0;
 }
