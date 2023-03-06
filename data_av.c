@@ -56,7 +56,7 @@ void ProcessFile(char *filePath)
     ssize_t getlineResult;
     int linesRead = 0;
     
-    fd = fopen(filePath,"r");
+    fd = fopen(filePath,"r"); // "r" means open file for reading
 
     // check error on file opening
     if(fd == NULL)
@@ -71,6 +71,7 @@ void ProcessFile(char *filePath)
         //printf("%s", line);
         linesRead++;
     }
+
     free(line); 
 
     printf("lines read: %d\n", linesRead);
