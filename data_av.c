@@ -9,14 +9,16 @@
 #define OPTION_INDEX 1
 
 // function prototypes
-void PrintCityData();
+
+void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, int linesProcessed);
 
 char *Concat(char *string1, char *string2); 
 
 void ProcessFile(char *filePath);
 
-// draft, will have parameters later
-void PrintCityData()
+// Print data gathered and calculated for each city file.
+// Could use a struct as the argument.
+void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, int linesProcessed)
 {
     // print separator
     int count = 40;
@@ -25,19 +27,9 @@ void PrintCityData()
         printf("=");
     }
 
-    // assign data
-    // temporary
-    char *cityName = "city";
-    float minTemp = -20.3;
-    float maxTemp = 36.1;
-    float averageTemp = 21.0;
-    int valuesProcessed = 1000;
-
-    printf("\nData for: %s", cityName);
-    printf("\n%s's lowest temperature: %f", cityName, minTemp);
-    printf("\n%s's hightest temperature: %f", cityName, minTemp);
-    printf("\nAverage temperature for %s: %f", cityName, averageTemp);
-
+    printf("\n%s's highest temperature: %f", city, maxTemp);
+    printf("\n%s's lowest temperature: %f", city, minTemp);
+    printf("\n%s's average temperature: %f", city, averageTemp);
     printf("\n\n");
     
 }
@@ -54,7 +46,7 @@ char *Concat(char *string1, char *string2)
 
 void ProcessFile(char *filePath)
 {
-    printf("opening %s\n", filePath);
+    printf("opening: %s\n", filePath);
 
     FILE *fd;
     char *line = NULL;
@@ -101,7 +93,7 @@ int main(int argc, char *argv[])
         if(strcmp(argv[OPTION_INDEX], "-m") == 0)
         {
             multithreading = 1;
-            printf("running with multithreading option\n");
+            printf("running with multithreading option\n\n");
         }
         else
         {
@@ -124,7 +116,20 @@ int main(int argc, char *argv[])
         Win = 9,
     };
 
-    char *fileNames[NUM_OF_FILES] = {"Montreal.dat","Halifax.dat","Edmonton.dat","Charlottetown.dat", "Ottawa.dat","Quebec.dat","Toronto.dat","Vancouver.dat","Victoria.dat", "Winnipeg.dat"};
+    char *fileNames[NUM_OF_FILES] = 
+    {
+        "Montreal.dat",
+        "Halifax.dat",
+        "Edmonton.dat",
+        "Charlottetown.dat", 
+        "Ottawa.dat",
+        "Quebec.dat",
+        "Toronto.dat",
+        "Vancouver.dat",
+        "Victoria.dat",
+        "Winnipeg.dat"
+    };
+
     char *filepath = "data_files/";
     int fdList[NUM_OF_FILES];
     
