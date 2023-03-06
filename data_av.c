@@ -27,6 +27,8 @@ void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, 
         printf("=");
     }
 
+    // Assignment output
+    printf("\nData for: %s city", city);
     printf("\n%s's highest temperature: %f", city, maxTemp);
     printf("\n%s's lowest temperature: %f", city, minTemp);
     printf("\n%s's average temperature: %f", city, averageTemp);
@@ -79,27 +81,10 @@ void ProcessFile(char *filePath)
 
 int main(int argc, char *argv[])
 {
+    // set variables
     int multithreading = 0;
-   
-    if(argc > 2)
-    {
-        printf("Usage:\t%s (single threaded)\n\t%s -m (multi threaded)\n", argv[NAME_INDEX], argv[NAME_INDEX]);
-        exit(1);
-    }
-
-    // if there is a option
-    if(argc == 2)
-    {
-        if(strcmp(argv[OPTION_INDEX], "-m") == 0)
-        {
-            multithreading = 1;
-            printf("running with multithreading option\n\n");
-        }
-        else
-        {
-            printf("option '%s' not recognized\n", argv[OPTION_INDEX]);
-        }
-    }
+    int fdList[NUM_OF_FILES];
+    char *filepath = "data_files/";
 
     // indecies of filenames in array
     enum city
@@ -130,9 +115,28 @@ int main(int argc, char *argv[])
         "Winnipeg.dat"
     };
 
-    char *filepath = "data_files/";
-    int fdList[NUM_OF_FILES];
-    
+        // check number of arguments
+    if(argc > 2)
+    {
+        printf("Usage:\t%s (single threaded)\n\t%s -m (multi threaded)\n", argv[NAME_INDEX], argv[NAME_INDEX]);
+        exit(1);
+    }
+
+    // if there is a option
+    if(argc == 2)
+    {
+        if(strcmp(argv[OPTION_INDEX], "-m") == 0)
+        {
+            multithreading = 1;
+            printf("running with multithreading option\n\n");
+        }
+        else
+        {
+            printf("option '%s' not recognized\n", argv[OPTION_INDEX]);
+        }
+    }
+
+   
     // open file
     for(int i = 0; i < NUM_OF_FILES; i++)
     {
