@@ -55,9 +55,17 @@ void ProcessFile(char *filePath)
     size_t lineLength = 0;
     ssize_t getlineResult;
     int linesRead = 0;
+   
+    // for strtok_r
     const char *delim = "\t";
     char *saveptr;
     char *token;
+
+    float minTemp;
+    float maxTemp;
+    float averageTemp;
+
+    char *endptr;
     
     fd = fopen(filePath,"r"); // "r" means open file for reading
 
@@ -71,15 +79,19 @@ void ProcessFile(char *filePath)
     // read each line 
     while((getlineResult = getline(&line, &lineLength, fd)) != -1) // while result of getline() is not -1
     {
+        /**
         if((linesRead % 100) == 0)
         {
             printf(".");
-        }
+        }**/
         
         // parse line
         
-        // get first token
+        // get first token (should be min)
         token = strtok_r(line, delim, &saveptr);
+
+        minTemp = strtof(token, &endptr);
+        printf("%2.1f ", minTemp);
 
         if(token = NULL)
         {
@@ -88,7 +100,7 @@ void ProcessFile(char *filePath)
 
         while(token) // while token not null
         {
-            // parse rest of token
+            // parse rest of token (should be max)
             token = strtok_r(NULL, delim, &saveptr);
         }
 
@@ -162,7 +174,8 @@ int main(int argc, char *argv[])
         }
     }
 
-   
+  
+    // Non-multithreading
     // open and process files
     for(int i = 0; i < NUM_OF_FILES; i++)
     {
