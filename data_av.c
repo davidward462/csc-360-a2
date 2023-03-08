@@ -19,7 +19,7 @@ void ProcessFile(char *filePath);
 
 // Print data gathered and calculated for each city file.
 // TODO: Could use a struct as the argument.
-void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, int linesProcessed)
+void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, int valuesProcessed)
 {
     // print separator
     int count = 40;
@@ -33,6 +33,7 @@ void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, 
     printf("\n%s's highest temperature: %2.3f", city, maxTemp);
     printf("\n%s's lowest temperature: %2.3f", city, minTemp);
     printf("\n%s's average temperature: %2.3f", city, averageTemp);
+    printf("\nTotal values processed for %s is: %d", city, valuesProcessed);
     printf("\n\n");
     
 }
@@ -60,6 +61,7 @@ void ProcessFile(char *filePath)
     ssize_t getlineResult;
     int linesRead = 0; // record how many lines of the file we have gotten
     int currentLine = 1; // record which line of the file we are getting
+    long valuesProcessed = 0;
    
     // for strtok_r
     const char *delim = "\t";
@@ -91,7 +93,7 @@ void ProcessFile(char *filePath)
         // loop for tokenize
         while(token = strtok_r(ptr, delim, &rest))
         {
-
+            valuesProcessed++;
             currentValue = strtof(token, &endptr);
             averageTemp += currentValue;
 
@@ -140,60 +142,8 @@ void ProcessFile(char *filePath)
 
     free(line); 
 
-    PrintCityData(filePath, minTemp, maxTemp, averageTemp, linesRead);
+    PrintCityData(filePath, minTemp, maxTemp, averageTemp, valuesProcessed);
 
-    /**
-    // read each line 
-    while((getlineResult = getline(&line, &lineLength, fd)) != -1) // while result of getline() is not -1
-    {
-        printf("begin while (lines read: %d, current line: %d)\n", linesRead, linesRead+1); 
-        // parse line
-        // get first token (should be max)
-        token = strtok_r(line, delim, &rest);
-
-        printf("ran strtok_r");
-
-        // check if line is empty
-        if(token == NULL)
-        {
-            printf("empty line\n");
-            break;
-        }
-
-        maxColumnValue = strtof(token, &endptr);
-
-        // if this is the first line with values to read
-        if(linesRead == 0)
-        {
-            currentMaxTemp = maxColumnValue;
-        }
-
-        if(maxColumnValue > currentMaxTemp)
-        {
-            // overwrite if a new max is found
-            currentMaxTemp = maxColumnValue;
-            printf("%2.1f ", currentMaxTemp); // for testing
-        }
-
-        // parse rest of token (should be min)
-        // There is only ever one delim character, so no reason to make a loop
-        token = strtok_r(NULL, delim, &rest);
-        minColumnValue = strtof(token, &rest); 
-
-        // if this is the first line with values to read
-        if(linesRead == 0)
-        {
-            currentMinTemp = minColumnValue;
-        }   
-
-        if(minColumnValue < currentMinTemp)
-        {
-            currentMinTemp = minColumnValue;
-        }
-
-        linesRead++;
-    }
-    **/
 }
 
 int main(int argc, char *argv[])
