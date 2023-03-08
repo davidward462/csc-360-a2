@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
+#include <pthread.h>
 
 #define NUM_OF_FILES 10
 #define NAME_INDEX 0
@@ -51,7 +52,7 @@ char *Concat(char *string1, char *string2)
 // TODO: could this function be broken down?
 void ProcessFile(char *filePath)
 {
-    printf("opening: %s\n", filePath);
+    //printf("opening: %s\n", filePath);
 
     FILE *fd;
     char *line = NULL; // line we read from the file
@@ -80,8 +81,7 @@ void ProcessFile(char *filePath)
     getline(&line, &lineLength, fd);
     linesRead++;
 
-    // temporary
-    averageTemp  = 0.0;
+    averageTemp = 0.0; // needs to be assigned
     
     // new block
     while((getlineResult = getline(&line, &lineLength, fd)) != -1) // while result of getline() is not -1
@@ -93,6 +93,7 @@ void ProcessFile(char *filePath)
         {
 
             currentValue = strtof(token, &endptr);
+            averageTemp += currentValue;
 
             if(isMaxColumn)
             {
@@ -134,6 +135,8 @@ void ProcessFile(char *filePath)
         
         linesRead++;
     }
+
+    averageTemp = averageTemp / linesRead; // calculate average
 
     free(line); 
 
