@@ -30,9 +30,9 @@ void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, 
 
     // Assignment output
     printf("\nData for: %s city", city);
-    printf("\n%s's highest temperature: %2.1f", city, maxTemp);
-    printf("\n%s's lowest temperature: %2.1f", city, minTemp);
-    printf("\n%s's average temperature: %2.1f", city, averageTemp);
+    printf("\n%s's highest temperature: %2.3f", city, maxTemp);
+    printf("\n%s's lowest temperature: %2.3f", city, minTemp);
+    printf("\n%s's average temperature: %2.3f", city, averageTemp);
     printf("\n\n");
     
 }
