@@ -51,18 +51,24 @@ void ProcessFile(char *filePath)
     printf("opening: %s\n", filePath);
 
     FILE *fd;
-    char *line = NULL;
+    char *line = NULL; // line we read from the file
     size_t lineLength = 0;
     ssize_t getlineResult;
-    int linesRead = 0;
+    int linesRead = 0; // record how many lines of the file we have gotten
+    int currentLine = 1; // record which line of the file we are getting
    
     // for strtok_r
     const char *delim = "\t";
-    char *saveptr;
+    char *rest;
     char *token;
+    char *ptr;
 
-    float minTemp;
-    float maxTemp;
+    float minColumnValue;
+    float currentMinTemp;
+    
+    float maxColumnValue;
+    float currentMaxTemp;
+
     float averageTemp;
 
     char *endptr;
@@ -76,36 +82,74 @@ void ProcessFile(char *filePath)
         exit(1);
     }
 
+    // read title line and ignore
+    getline(&line, &lineLength, fd);
+    linesRead++;
+    
+    // new block
+    while((getlineResult = getline(&line, &lineLength, fd)) != -1) // while result of getline() is not -1
+    {
+        ptr = line;
+        // loop for tokenize
+        while(token = strtok_r(ptr, delim, &rest))
+        {
+            printf("%s\n", token);
+            ptr = rest;
+        }
+    }
+
+    /**
     // read each line 
     while((getlineResult = getline(&line, &lineLength, fd)) != -1) // while result of getline() is not -1
     {
-        /**
-        if((linesRead % 100) == 0)
-        {
-            printf(".");
-        }**/
-        
+        printf("begin while (lines read: %d, current line: %d)\n", linesRead, linesRead+1); 
         // parse line
-        
-        // get first token (should be min)
-        token = strtok_r(line, delim, &saveptr);
+        // get first token (should be max)
+        token = strtok_r(line, delim, &rest);
 
-        minTemp = strtof(token, &endptr);
-        printf("%2.1f ", minTemp);
+        printf("ran strtok_r");
 
-        if(token = NULL)
+        // check if line is empty
+        if(token == NULL)
         {
             printf("empty line\n");
+            break;
         }
 
-        while(token) // while token not null
+        maxColumnValue = strtof(token, &endptr);
+
+        // if this is the first line with values to read
+        if(linesRead == 0)
         {
-            // parse rest of token (should be max)
-            token = strtok_r(NULL, delim, &saveptr);
+            currentMaxTemp = maxColumnValue;
+        }
+
+        if(maxColumnValue > currentMaxTemp)
+        {
+            // overwrite if a new max is found
+            currentMaxTemp = maxColumnValue;
+            printf("%2.1f ", currentMaxTemp); // for testing
+        }
+
+        // parse rest of token (should be min)
+        // There is only ever one delim character, so no reason to make a loop
+        token = strtok_r(NULL, delim, &rest);
+        minColumnValue = strtof(token, &rest); 
+
+        // if this is the first line with values to read
+        if(linesRead == 0)
+        {
+            currentMinTemp = minColumnValue;
+        }   
+
+        if(minColumnValue < currentMinTemp)
+        {
+            currentMinTemp = minColumnValue;
         }
 
         linesRead++;
     }
+    **/
 
     printf("\n");
 
