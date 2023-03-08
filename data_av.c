@@ -29,9 +29,9 @@ void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, 
 
     // Assignment output
     printf("\nData for: %s city", city);
-    printf("\n%s's highest temperature: %f", city, maxTemp);
-    printf("\n%s's lowest temperature: %f", city, minTemp);
-    printf("\n%s's average temperature: %f", city, averageTemp);
+    printf("\n%s's highest temperature: %2.1f", city, maxTemp);
+    printf("\n%s's lowest temperature: %2.1f", city, minTemp);
+    printf("\n%s's average temperature: %2.1f", city, averageTemp);
     printf("\n\n");
     
 }
@@ -59,19 +59,10 @@ void ProcessFile(char *filePath)
    
     // for strtok_r
     const char *delim = "\t";
-    char *rest;
-    char *token;
-    char *ptr;
-
-    float minColumnValue;
-    float currentMinTemp;
-    
-    float maxColumnValue;
-    float currentMaxTemp;
-
-    float averageTemp;
-
+    char *rest, *token, *ptr;
+    float minTemp, maxTemp, localMinTemp, localMaxTemp, averageTemp;
     char *endptr;
+    int isMaxColumn = 1; // indicates if the current token is from the max column (first column)
     
     fd = fopen(filePath,"r"); // "r" means open file for reading
 
@@ -85,18 +76,64 @@ void ProcessFile(char *filePath)
     // read title line and ignore
     getline(&line, &lineLength, fd);
     linesRead++;
+
+    // temporary
+    averageTemp  = 0.0;
     
     // new block
     while((getlineResult = getline(&line, &lineLength, fd)) != -1) // while result of getline() is not -1
     {
         ptr = line;
+
         // loop for tokenize
         while(token = strtok_r(ptr, delim, &rest))
         {
-            printf("%s\n", token);
+            if(isMaxColumn)
+            {
+                localMaxTemp = strtof(token, &endptr);
+                
+                if(linesRead < 2) // if reading first line of values
+                {
+                    maxTemp = localMaxTemp; 
+                }
+
+                if(localMaxTemp > maxTemp)
+                {
+                    maxTemp = localMaxTemp;
+                }
+            }
+            else
+            {
+                localMinTemp = strtof(token, &endptr);
+                
+                if(linesRead < 2) // if reading first line of values
+                {
+                    minTemp = localMinTemp; 
+                }
+
+                if(localMinTemp < minTemp)
+                {
+                    minTemp = localMinTemp;
+                }
+            }
+
             ptr = rest;
+            if(isMaxColumn)
+            {
+                isMaxColumn = 0;
+            }
+            else
+            {
+                isMaxColumn = 1;
+            }
         }
+        
+        linesRead++;
     }
+
+    free(line); 
+
+    PrintCityData(filePath, minTemp, maxTemp, averageTemp, linesRead);
 
     /**
     // read each line 
@@ -150,15 +187,6 @@ void ProcessFile(char *filePath)
         linesRead++;
     }
     **/
-
-    printf("\n");
-
-    free(line); 
-
-    printf("lines read: %d\n", linesRead);
-    
-    printf("\n");
-
 }
 
 int main(int argc, char *argv[])
@@ -229,9 +257,6 @@ int main(int argc, char *argv[])
         // this function is probably the one which will be called in pthread()
         ProcessFile(fileName);
     }
-
-    // for testing
-    PrintCityData("Victoria", -3.4, 35.7, 10.1, 29012);
 
     return 0;
 }
