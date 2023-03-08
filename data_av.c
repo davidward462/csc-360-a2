@@ -17,7 +17,7 @@ char *Concat(char *string1, char *string2);
 void ProcessFile(char *filePath);
 
 // Print data gathered and calculated for each city file.
-// Could use a struct as the argument.
+// TODO: Could use a struct as the argument.
 void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, int linesProcessed)
 {
     // print separator
@@ -46,6 +46,9 @@ char *Concat(char *string1, char *string2)
     return newString;
 }
 
+
+// open and read file, and calculate required values
+// TODO: could this function be broken down?
 void ProcessFile(char *filePath)
 {
     printf("opening: %s\n", filePath);
@@ -60,7 +63,7 @@ void ProcessFile(char *filePath)
     // for strtok_r
     const char *delim = "\t";
     char *rest, *token, *ptr;
-    float minTemp, maxTemp, localMinTemp, localMaxTemp, averageTemp;
+    float currentValue, minTemp, maxTemp, localMinTemp, localMaxTemp, averageTemp;
     char *endptr;
     int isMaxColumn = 1; // indicates if the current token is from the max column (first column)
     
@@ -88,32 +91,33 @@ void ProcessFile(char *filePath)
         // loop for tokenize
         while(token = strtok_r(ptr, delim, &rest))
         {
+
+            currentValue = strtof(token, &endptr);
+
             if(isMaxColumn)
             {
-                localMaxTemp = strtof(token, &endptr);
                 
                 if(linesRead < 2) // if reading first line of values
                 {
-                    maxTemp = localMaxTemp; 
+                    maxTemp = currentValue; 
                 }
 
-                if(localMaxTemp > maxTemp)
+                if(currentValue > maxTemp)
                 {
-                    maxTemp = localMaxTemp;
+                    maxTemp = currentValue; 
                 }
             }
             else
             {
-                localMinTemp = strtof(token, &endptr);
                 
                 if(linesRead < 2) // if reading first line of values
                 {
-                    minTemp = localMinTemp; 
+                    minTemp = currentValue; 
                 }
 
-                if(localMinTemp < minTemp)
+                if(currentValue < minTemp)
                 {
-                    minTemp = localMinTemp;
+                    minTemp = currentValue;
                 }
             }
 
