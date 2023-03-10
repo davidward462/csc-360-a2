@@ -15,27 +15,51 @@ void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, 
 
 char *Concat(char *string1, char *string2); 
 
-void ProcessFile(char *filePath);
+void *ProcessFile(char *filePath);
 
 // Print data gathered and calculated for each city file.
 // TODO: Could use a struct as the argument.
 void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, int valuesProcessed)
 {
+    printf("begin PrintCityData\n");
+
+    char buffer[128];
+    int seqPrint = 0;
+    char *a, *b, *c;
+
     // print separator
     int count = 40;
     for(int i = 1; i <= count; i++)
     {
         printf("=");
     }
-
-    // Assignment output
-    printf("\nData for: %s city", city);
-    printf("\n%s's highest temperature: %2.3f", city, maxTemp);
-    printf("\n%s's lowest temperature: %2.3f", city, minTemp);
-    printf("\n%s's average temperature: %2.3f", city, averageTemp);
-    printf("\nTotal values processed for %s is: %d", city, valuesProcessed);
-    printf("\n\n");
     
+    // Assignment output
+    if(seqPrint)
+    {
+        printf("\nData for: %s city", city);
+        printf("\n%s's highest temperature: %2.3f", city, maxTemp);
+        printf("\n%s's lowest temperature: %2.3f", city, minTemp);
+        printf("\n%s's average temperature: %2.3f", city, averageTemp);
+        printf("\nTotal values processed for %s is: %d", city, valuesProcessed);
+    }
+    else
+    {
+        snprintf(a, 128, "\nData for: %s city", city);
+        snprintf(b, 128, "\n%s's highest temperature: %2.3f", city, maxTemp);
+        c = Concat(a, b);
+
+        snprintf(b, 128, "\n%s's lowest temperature: %2.3f", city, minTemp);
+        c = Concat(c, b); 
+
+        snprintf(b, 128, "\n%s's average temperature: %2.3f", city, averageTemp);
+        c = Concat(c, b); 
+
+        snprintf(b, 128, "\nTotal values processed for %s is: %d", city, valuesProcessed);
+        c = Concat(c, b); 
+
+        printf("%s\n", c);
+    }
 }
 
 // concatenate string1 and string2
@@ -51,7 +75,7 @@ char *Concat(char *string1, char *string2)
 
 // open and read file, and calculate required values
 // TODO: could this function be broken down?
-void ProcessFile(char *filePath)
+void *ProcessFile(char *filePath)
 {
     //printf("opening: %s\n", filePath);
 
@@ -135,7 +159,7 @@ void ProcessFile(char *filePath)
             }
         }
         
-        linesRead++;
+        linesRead++; // TODO: don't increment on empty lines
     }
 
     averageTemp = averageTemp / linesRead; // calculate average
@@ -204,15 +228,20 @@ int main(int argc, char *argv[])
     }
 
   
-    // Non-multithreading
     // open and process files
     for(int i = 0; i < NUM_OF_FILES; i++)
     {
         char *fileName = Concat(filepath, fileNames[i]); // create path
 
-        // TODO: add multithreading
-        // this function is probably the one which will be called in pthread()
-        ProcessFile(fileName);
+        if(multithreading) // multithreading mode
+        {
+            // create threads here
+            ProcessFile(fileName);
+        }
+        else // if in linear mode
+        {
+            ProcessFile(fileName);
+        }
     }
 
     return 0;
