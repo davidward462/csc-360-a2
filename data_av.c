@@ -4,6 +4,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <pthread.h>
+#include <time.h>
 
 #define NUM_OF_FILES 10
 #define NAME_INDEX 0
@@ -32,6 +33,7 @@ void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, 
         printf("=");
     }
     
+    // TODO: remove conditional and only leave single print
     // Assignment output
     if(seqPrint)
     {
@@ -43,9 +45,9 @@ void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, 
     }
     else
     {
-        printf("\nData for: %s city\n%s's highest temperature: %2.3f\n%s's lowest temperature: %2.3f\n%s's average temperature: %2.3f\nTotal values processed for %s is: %d",city,city,maxTemp,city,minTemp,city,averageTemp,city,valuesProcessed);
+        printf("\nData for: %s city\n%s's highest temperature: %2.3f\n%s's lowest temperature: %2.3f\n%s's average temperature: %2.3f\nTotal values processed for %s is: %d\n",city,city,maxTemp,city,minTemp,city,averageTemp,city,valuesProcessed);
 
-    sleep(1);
+    //sleep(1);
     }
 }
 
@@ -230,6 +232,9 @@ int main(int argc, char *argv[])
             ProcessFile(fileName);
         }
     }
+
+    clock_t programClock = clock();
+    printf("\n%li\nProgram finished.\n", programClock);
 
     return 0;
 }
