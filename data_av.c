@@ -21,8 +21,6 @@ void *ProcessFile(char *filePath);
 // TODO: Could use a struct as the argument.
 void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, int valuesProcessed)
 {
-    printf("begin PrintCityData\n");
-
     char buffer[128];
     int seqPrint = 0;
     char *a, *b, *c;
@@ -45,20 +43,9 @@ void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, 
     }
     else
     {
-        snprintf(a, 128, "\nData for: %s city", city);
-        snprintf(b, 128, "\n%s's highest temperature: %2.3f", city, maxTemp);
-        c = Concat(a, b);
+        printf("\nData for: %s city\n%s's highest temperature: %2.3f\n%s's lowest temperature: %2.3f\n%s's average temperature: %2.3f\nTotal values processed for %s is: %d",city,city,maxTemp,city,minTemp,city,averageTemp,city,valuesProcessed);
 
-        snprintf(b, 128, "\n%s's lowest temperature: %2.3f", city, minTemp);
-        c = Concat(c, b); 
-
-        snprintf(b, 128, "\n%s's average temperature: %2.3f", city, averageTemp);
-        c = Concat(c, b); 
-
-        snprintf(b, 128, "\nTotal values processed for %s is: %d", city, valuesProcessed);
-        c = Concat(c, b); 
-
-        printf("%s\n", c);
+    sleep(1);
     }
 }
 
