@@ -23,7 +23,6 @@ void *ProcessFile(char *filePath);
 void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, int valuesProcessed)
 {
     char buffer[128];
-    int seqPrint = 0;
     char *a, *b, *c;
 
     // print separator
@@ -33,23 +32,10 @@ void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, 
         printf("=");
     }
     
-    // TODO: remove conditional and only leave single print
-    // Assignment output
-    if(seqPrint)
-    {
-        printf("\nData for: %s city", city);
-        printf("\n%s's highest temperature: %2.3f", city, maxTemp);
-        printf("\n%s's lowest temperature: %2.3f", city, minTemp);
-        printf("\n%s's average temperature: %2.3f", city, averageTemp);
-        printf("\nTotal values processed for %s is: %d", city, valuesProcessed);
-    }
-    else
-    {
         printf("\nData for: %s city\n%s's highest temperature: %2.3f\n%s's lowest temperature: %2.3f\n%s's average temperature: %2.3f\nTotal values processed for %s is: %d\n",city,city,maxTemp,city,minTemp,city,averageTemp,city,valuesProcessed);
 
     //sleep(1);
     }
-}
 
 // concatenate string1 and string2
 // resultant string must be free()'d when no longer needed!
@@ -157,6 +143,8 @@ void *ProcessFile(char *filePath)
 
     PrintCityData(filePath, minTemp, maxTemp, averageTemp, valuesProcessed);
 
+    return NULL;
+
 }
 
 int main(int argc, char *argv[])
@@ -216,6 +204,9 @@ int main(int argc, char *argv[])
         }
     }
 
+    // set up for threads
+    pthread_t *threadID;
+    threadID = (pthread_t *) malloc(sizeof(pthread_t) * NUM_OF_FILES);
   
     // open and process files
     for(int i = 0; i < NUM_OF_FILES; i++)
@@ -225,11 +216,21 @@ int main(int argc, char *argv[])
         if(multithreading) // multithreading mode
         {
             // create threads here
+            pthread_create(&threadID[i], NULL, ProcessFile, (void*)fileName);
             ProcessFile(fileName);
         }
         else // if in linear mode
         {
             ProcessFile(fileName);
+        }
+    }
+
+    // synchronize join of all files
+    if(multithreading)
+    {
+        for(int i = 0; i < NUM_OF_FILES; i++)
+        {
+            pthread_join(threadID[i], NULL);
         }
     }
 
