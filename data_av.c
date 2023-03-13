@@ -16,7 +16,7 @@ void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, 
 
 char *Concat(char *string1, char *string2); 
 
-void *ProcessFile(char *filePath);
+void *ProcessFile(void *filePath);
 
 // Print data gathered and calculated for each city file.
 // TODO: Could use a struct as the argument.
@@ -50,7 +50,7 @@ char *Concat(char *string1, char *string2)
 
 // open and read file, and calculate required values
 // TODO: could this function be broken down?
-void *ProcessFile(char *filePath)
+void *ProcessFile(void *filePath)
 {
     //printf("opening: %s\n", filePath);
 
@@ -217,7 +217,7 @@ int main(int argc, char *argv[])
         {
             // create threads here
             pthread_create(&threadID[i], NULL, ProcessFile, (void*)fileName);
-            ProcessFile(fileName);
+            //ProcessFile(fileName);
         }
         else // if in linear mode
         {

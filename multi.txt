@@ -1,0 +1,63 @@
+========================================
+Data for: data_files/Montreal.dat city
+data_files/Montreal.dat's highest temperature: 34.100
+data_files/Montreal.dat's lowest temperature: -50.000
+data_files/Montreal.dat's average temperature: 4.330
+Total values processed for data_files/Montreal.dat is: 33471
+========================================
+Data for: data_files/Halifax.dat city
+data_files/Halifax.dat's highest temperature: 34.300
+data_files/Halifax.dat's lowest temperature: -26.500
+data_files/Halifax.dat's average temperature: 14.144
+Total values processed for data_files/Halifax.dat is: 60942
+========================================
+Data for: data_files/Edmonton.dat city
+data_files/Edmonton.dat's highest temperature: 37.000
+data_files/Edmonton.dat's lowest temperature: -48.300
+data_files/Edmonton.dat's average temperature: 7.394
+Total values processed for data_files/Edmonton.dat is: 62000
+========================================
+Data for: data_files/Charlottetown.dat city
+data_files/Charlottetown.dat's highest temperature: 33.300
+data_files/Charlottetown.dat's lowest temperature: -27.100
+data_files/Charlottetown.dat's average temperature: 11.368
+Total values processed for data_files/Charlottetown.dat is: 58177
+========================================
+Data for: data_files/Ottawa.dat city
+data_files/Ottawa.dat's highest temperature: 37.800
+data_files/Ottawa.dat's lowest temperature: -36.100
+data_files/Ottawa.dat's average temperature: 12.313
+Total values processed for data_files/Ottawa.dat is: 62000
+========================================
+Data for: data_files/Quebec.dat city
+data_files/Quebec.dat's highest temperature: 35.600
+data_files/Quebec.dat's lowest temperature: -36.700
+data_files/Quebec.dat's average temperature: 9.053
+Total values processed for data_files/Quebec.dat is: 58364
+========================================
+Data for: data_files/Toronto.dat city
+data_files/Toronto.dat's highest temperature: 38.300
+data_files/Toronto.dat's lowest temperature: -31.300
+data_files/Toronto.dat's average temperature: 15.831
+Total values processed for data_files/Toronto.dat is: 61877
+========================================
+Data for: data_files/Vancouver.dat city
+data_files/Vancouver.dat's highest temperature: 40.600
+data_files/Vancouver.dat's lowest temperature: -13.000
+data_files/Vancouver.dat's average temperature: 20.873
+Total values processed for data_files/Vancouver.dat is: 21893
+========================================
+Data for: data_files/Victoria.dat city
+data_files/Victoria.dat's highest temperature: 39.400
+data_files/Victoria.dat's lowest temperature: -15.600
+data_files/Victoria.dat's average temperature: 19.736
+Total values processed for data_files/Victoria.dat is: 62000
+========================================
+Data for: data_files/Winnipeg.dat city
+data_files/Winnipeg.dat's highest temperature: 40.600
+data_files/Winnipeg.dat's lowest temperature: -45.000
+data_files/Winnipeg.dat's average temperature: 5.368
+Total values processed for data_files/Winnipeg.dat is: 62000
+
+82992
+Program finished.
