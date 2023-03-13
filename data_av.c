@@ -10,6 +10,26 @@
 #define NAME_INDEX 0
 #define OPTION_INDEX 1
 
+// stuct for process_file() return data
+struct cityData 
+{
+    char *city;
+    int totalValues;
+    float maxTemp;
+    float minTemp;
+    int elapsedTime;
+};
+
+struct summaryData 
+{
+    int totalValues;
+    float overalMaxTemp;
+    char *maxTempCity;
+    float overallMinTemp;
+    char *minTempCity;
+    int elapsedTime;
+};
+
 // function prototypes
 
 void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, int linesProcessed);
