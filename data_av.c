@@ -10,7 +10,7 @@
 #define NAME_INDEX 0
 #define OPTION_INDEX 1
 
-// stuct for process_file() return data
+// Structs for storing data from thread
 struct cityData 
 {
     char *city;
