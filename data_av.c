@@ -10,6 +10,37 @@
 #define NAME_INDEX 0
 #define OPTION_INDEX 1
 
+// This is global now
+const char *fileNames[NUM_OF_FILES] = 
+{
+    // alphabetical order
+    "Charlottetown.dat", 
+    "Edmonton.dat",
+    "Halifax.dat",
+    "Montreal.dat",
+    "Ottawa.dat",
+    "Quebec.dat",
+    "Toronto.dat",
+    "Vancouver.dat",
+    "Victoria.dat",
+    "Winnipeg.dat"
+};
+
+// indecies of filenames in array
+enum city
+{
+    Charl = 3,
+    Edm = 2,
+    Hal = 1,
+    Mont = 0,
+    Ott = 4,
+    Qu = 5,
+    Tor = 6,
+    Van = 7,
+    Vic = 8,
+    Win = 9,
+};
+
 // Structs for storing data from thread
 struct cityData 
 {
@@ -36,7 +67,7 @@ void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, 
 
 char *Concat(char *string1, char *string2); 
 
-void *ProcessFile(void *filePath);
+void *ProcessFile(void *cityIndex);
 
 // Print data gathered and calculated for each city file.
 // TODO: Could use a struct as the argument.
@@ -70,7 +101,7 @@ char *Concat(char *string1, char *string2)
 
 // open and read file, and calculate required values
 // TODO: could this function be broken down?
-void *ProcessFile(void *filePath)
+void *ProcessFile(void *cityIndex)
 {
     //printf("opening: %s\n", filePath);
 
@@ -174,36 +205,8 @@ int main(int argc, char *argv[])
     int fdList[NUM_OF_FILES];
     char *filepath = "data_files/";
 
-    // indecies of filenames in array
-    enum city
-    {
-        Mont = 0,
-        Hal = 1,
-        Edm = 2,
-        Charl = 3,
-        Ott = 4,
-        Qu = 5,
-        Tor = 6,
-        Van = 7,
-        Vic = 8,
-        Win = 9,
-    };
 
-    char *fileNames[NUM_OF_FILES] = 
-    {
-        "Montreal.dat",
-        "Halifax.dat",
-        "Edmonton.dat",
-        "Charlottetown.dat", 
-        "Ottawa.dat",
-        "Quebec.dat",
-        "Toronto.dat",
-        "Vancouver.dat",
-        "Victoria.dat",
-        "Winnipeg.dat"
-    };
-
-        // check number of arguments
+    // check number of arguments
     if(argc > 2)
     {
         printf("Usage:\t%s (single threaded)\n\t%s -m (multi threaded)\n", argv[NAME_INDEX], argv[NAME_INDEX]);
