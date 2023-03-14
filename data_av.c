@@ -29,10 +29,10 @@ const char *fileNames[NUM_OF_FILES] =
 // indecies of filenames in array
 enum city
 {
-    Charl = 3,
-    Edm = 2,
-    Hal = 1,
-    Mont = 0,
+    Charl = 0,
+    Edm = 1,
+    Hal = 2,
+    Mont = 3,
     Ott = 4,
     Qu = 5,
     Tor = 6,
@@ -70,8 +70,7 @@ char *Concat(char *string1, char *string2);
 void *ProcessFile(void *cityIndex);
 
 // Print data gathered and calculated for each city file.
-// TODO: Could use a struct as the argument.
-void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, int valuesProcessed)
+void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, int linesProcessed)
 {
     char buffer[128];
     char *a, *b, *c;
@@ -83,7 +82,8 @@ void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, 
         printf("=");
     }
     
-        printf("\nData for: %s city\n%s's highest temperature: %2.3f\n%s's lowest temperature: %2.3f\n%s's average temperature: %2.3f\nTotal values processed for %s is: %d\n",city,city,maxTemp,city,minTemp,city,averageTemp,city,valuesProcessed);
+    // Here, "total values" means the number of valid lines processed. Not individual numbers.
+        printf("\nData for: %s city\n%s's highest temperature: %2.3f\n%s's lowest temperature: %2.3f\n%s's average temperature: %2.3f\nTotal values processed for %s is: %d\n",city,city,maxTemp,city,minTemp,city,averageTemp,city,linesProcessed);
 
     //sleep(1);
     }
@@ -100,27 +100,30 @@ char *Concat(char *string1, char *string2)
 
 
 // open and read file, and calculate required values
-// TODO: could this function be broken down?
 void *ProcessFile(void *cityIndex)
 {
-    //printf("opening: %s\n", filePath);
-
+    // reading files
     FILE *fd;
-    char *line = NULL; // line we read from the file
+    char *fileDirectory= "data_files/";     // location of files
+    char *line = NULL;          // line we read from the file
     size_t lineLength = 0;
     ssize_t getlineResult;
-    int linesRead = 0; // record how many lines of the file we have gotten
-    int currentLine = 1; // record which line of the file we are getting
-    long valuesProcessed = 0;
+    int linesRead = 0;          // record how many lines of the file we have gotten
+    int currentLine = 1;        // record which line of the file we are getting
+    int isMaxColumn = 1;        // indicates if the current token is from the max column (first column)
    
     // for strtok_r
     const char *delim = "\t";
     char *rest, *token, *ptr;
-    float currentValue, minTemp, maxTemp, localMinTemp, localMaxTemp, averageTemp;
+
+    // file data
+    float currentValue, minTemp, maxTemp, localMinTemp, localMaxTemp;
+    float averageTemp = 0.0; // needs to be assigned to
     char *endptr;
-    int isMaxColumn = 1; // indicates if the current token is from the max column (first column)
-    
-    fd = fopen(filePath,"r"); // "r" means open file for reading
+
+    // open file
+    char *filePath = Concat(fileDirectory, fileNames[(int)cityIndex]); // create path
+    fd = fopen(filePath,"r"); // open file for reading
 
     // check error on file opening
     if(fd == NULL)
@@ -133,7 +136,6 @@ void *ProcessFile(void *cityIndex)
     getline(&line, &lineLength, fd);
     linesRead++;
 
-    averageTemp = 0.0; // needs to be assigned
     
     // new block
     while((getlineResult = getline(&line, &lineLength, fd)) != -1) // while result of getline() is not -1
@@ -143,7 +145,6 @@ void *ProcessFile(void *cityIndex)
         // loop for tokenize
         while(token = strtok_r(ptr, delim, &rest))
         {
-            valuesProcessed++;
             currentValue = strtof(token, &endptr);
             averageTemp += currentValue;
 
@@ -192,7 +193,8 @@ void *ProcessFile(void *cityIndex)
 
     free(line); 
 
-    PrintCityData(filePath, minTemp, maxTemp, averageTemp, valuesProcessed);
+    // TODO: made change from linesRead to linesProcessed
+    PrintCityData(filePath, minTemp, maxTemp, averageTemp, linesRead);
 
     return NULL;
 
@@ -203,7 +205,6 @@ int main(int argc, char *argv[])
     // set variables
     int multithreading = 0;
     int fdList[NUM_OF_FILES];
-    char *filepath = "data_files/";
 
 
     // check number of arguments
@@ -232,19 +233,17 @@ int main(int argc, char *argv[])
     threadID = (pthread_t *) malloc(sizeof(pthread_t) * NUM_OF_FILES);
   
     // open and process files
-    for(int i = 0; i < NUM_OF_FILES; i++)
+    for(int cityIndex = 0; cityIndex < NUM_OF_FILES; cityIndex++)
     {
-        char *fileName = Concat(filepath, fileNames[i]); // create path
 
         if(multithreading) // multithreading mode
         {
             // create threads here
-            pthread_create(&threadID[i], NULL, ProcessFile, (void*)fileName);
-            //ProcessFile(fileName);
+            pthread_create(&threadID[cityIndex], NULL, ProcessFile, (void*)cityIndex);
         }
         else // if in linear mode
         {
-            ProcessFile(fileName);
+            ProcessFile(cityIndex);
         }
     }
 
