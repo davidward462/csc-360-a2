@@ -151,7 +151,9 @@ void *ProcessFile(void *cityIndex)
         // loop for tokenize
         while(token = strtok_r(ptr, delim, &rest))
         {
+            // cast to float
             currentValue = strtof(token, &endptr);
+
             averageTemp += currentValue;
 
             if(isMaxColumn)
@@ -182,6 +184,7 @@ void *ProcessFile(void *cityIndex)
             }
 
             ptr = rest;
+            // next column
             if(isMaxColumn)
             {
                 isMaxColumn = 0;
