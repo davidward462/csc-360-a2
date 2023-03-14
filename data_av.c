@@ -11,7 +11,7 @@
 #define OPTION_INDEX 1
 
 // This is global now
-const char *fileNames[NUM_OF_FILES] = 
+char *fileNames[NUM_OF_FILES] = 
 {
     // alphabetical order
     "Charlottetown.dat", 
@@ -85,7 +85,6 @@ void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, 
     // Here, "total values" means the number of valid lines processed. Not individual numbers.
         printf("\nData for: %s city\n%s's highest temperature: %2.3f\n%s's lowest temperature: %2.3f\n%s's average temperature: %2.3f\nTotal values processed for %s is: %d\n",city,city,maxTemp,city,minTemp,city,averageTemp,city,linesProcessed);
 
-    //sleep(1);
     }
 
 // concatenate string1 and string2
@@ -121,8 +120,13 @@ void *ProcessFile(void *cityIndex)
     float averageTemp = 0.0; // needs to be assigned to
     char *endptr;
 
+    // handle argument
+    // cityIndex is actually an address (specifically a void pointer), but we want to make it an int. 
+    // First cast cityIndex to an int pointer, then access it's value (an address).
+    int index = *(int *)cityIndex;
+
     // open file
-    char *filePath = Concat(fileDirectory, fileNames[(int)cityIndex]); // create path
+    char *filePath = Concat(fileDirectory, fileNames[index]); // create path
     fd = fopen(filePath,"r"); // open file for reading
 
     // check error on file opening
@@ -235,15 +239,17 @@ int main(int argc, char *argv[])
     // open and process files
     for(int cityIndex = 0; cityIndex < NUM_OF_FILES; cityIndex++)
     {
+        int indexValue = cityIndex;
 
         if(multithreading) // multithreading mode
         {
             // create threads here
-            pthread_create(&threadID[cityIndex], NULL, ProcessFile, (void*)cityIndex);
+            // pass the address of an int, cast to a void pointer
+            pthread_create(&threadID[cityIndex], NULL, ProcessFile, (void*)&indexValue);
         }
         else // if in linear mode
         {
-            ProcessFile(cityIndex);
+            ProcessFile(&cityIndex);
         }
     }
 
