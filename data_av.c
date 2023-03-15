@@ -74,9 +74,6 @@ void *ProcessFile(void *cityIndex);
 // Print data gathered and calculated for each city file.
 void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, int linesProcessed)
 {
-    char buffer[128];
-    char *a, *b, *c;
-
     // print separator
     int count = 40;
     for(int i = 1; i <= count; i++)
@@ -122,7 +119,6 @@ void *ProcessFile(void *cityIndex)
     float averageTemp = 0.0; // needs to be assigned to
     char *endptr;
 
-    // TODO: might need a lock here
     // handle argument
     // cityIndex is actually an address (specifically a void pointer), but we want to make it an int. 
     // First cast cityIndex to an int pointer, then access it's value (an address).
@@ -130,10 +126,7 @@ void *ProcessFile(void *cityIndex)
     printf("recieved index: %d\n", index);
 
     // open file
-    // possible critical section
-    //pthread_mutex_lock(&mutex);
     char *filePath = Concat(fileDirectory, fileNames[index]); // create path
-    //pthread_mutex_unlock(&mutex);
 
     fd = fopen(filePath,"r"); // open file for reading
 
@@ -246,11 +239,6 @@ int main(int argc, char *argv[])
     pthread_t *threadID;
     threadID = (pthread_t *) malloc(sizeof(pthread_t) * NUM_OF_FILES);
 
-    // return values
-    // Create variable to hold pointers which are each the size of addresses to the structs.
-    struct summaryData **summaryArray = malloc(NUM_OF_FILES * sizeof(struct summaryData *));
-
-  
     // open and process files
     for(int cityIndex = 0; cityIndex < NUM_OF_FILES; cityIndex++)
     {
@@ -269,10 +257,6 @@ int main(int argc, char *argv[])
             printf("linear call\n");
         }
     }
-
-    // what is this?
-    // "pointer to the array"
-    //struct summaryData ***p = &summaryArray;
 
     // synchronize join of all files
     if(multithreading)
