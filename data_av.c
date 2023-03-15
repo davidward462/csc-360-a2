@@ -131,9 +131,9 @@ void *ProcessFile(void *cityIndex)
 
     // open file
     // possible critical section
-    pthread_mutex_lock(&mutex);
+    //pthread_mutex_lock(&mutex);
     char *filePath = Concat(fileDirectory, fileNames[index]); // create path
-    pthread_mutex_unlock(&mutex);
+    //pthread_mutex_unlock(&mutex);
 
     fd = fopen(filePath,"r"); // open file for reading
 
@@ -210,7 +210,7 @@ void *ProcessFile(void *cityIndex)
 
     // TODO: made change from linesRead to linesProcessed
     PrintCityData(filePath, minTemp, maxTemp, averageTemp, linesRead);
-
+    return NULL;
 
 }
 
@@ -272,14 +272,14 @@ int main(int argc, char *argv[])
 
     // what is this?
     // "pointer to the array"
-    struct summaryData ***p = &summaryArray;
+    //struct summaryData ***p = &summaryArray;
 
     // synchronize join of all files
     if(multithreading)
     {
         for(int i = 0; i < NUM_OF_FILES; i++)
         {
-            pthread_join(threadID[i], (void **)&p);
+            pthread_join(threadID[i], NULL);
         }
     }
 
