@@ -10,9 +10,11 @@
 #define NAME_INDEX 0
 #define OPTION_INDEX 1
 
+
+// Global variables
+
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
-// This is global now
 char *fileNames[NUM_OF_FILES] = 
 {
     // alphabetical order
@@ -26,41 +28,6 @@ char *fileNames[NUM_OF_FILES] =
     "Vancouver.dat",
     "Victoria.dat",
     "Winnipeg.dat"
-};
-
-// indecies of filenames in array
-enum city
-{
-    Charl = 0,
-    Edm = 1,
-    Hal = 2,
-    Mont = 3,
-    Ott = 4,
-    Qu = 5,
-    Tor = 6,
-    Van = 7,
-    Vic = 8,
-    Win = 9,
-};
-
-// Structs for storing data from thread
-struct cityData 
-{
-    char *city;
-    int totalValues;
-    float maxTemp;
-    float minTemp;
-    int elapsedTime;
-};
-
-struct summaryData 
-{
-    int totalValues;
-    float overalMaxTemp;
-    char *maxTempCity;
-    float overallMinTemp;
-    char *minTempCity;
-    int elapsedTime;
 };
 
 // function prototypes
@@ -123,7 +90,7 @@ void *ProcessFile(void *cityIndex)
     // cityIndex is actually an address (specifically a void pointer), but we want to make it an int. 
     // First cast cityIndex to an int pointer, then access it's value (an address).
     int index = *(int *)cityIndex;
-    printf("recieved index: %d\n", index);
+    //printf("recieved index: %d\n", index);
 
     // open file
     char *filePath = Concat(fileDirectory, fileNames[index]); // create path
@@ -201,8 +168,8 @@ void *ProcessFile(void *cityIndex)
 
     free(line); 
 
-    // TODO: made change from linesRead to linesProcessed
-    PrintCityData(filePath, minTemp, maxTemp, averageTemp, linesRead);
+    //PrintCityData(filePath, minTemp, maxTemp, averageTemp, linesRead);
+    
     return NULL;
 
 }
@@ -227,7 +194,7 @@ int main(int argc, char *argv[])
         if(strcmp(argv[OPTION_INDEX], "-m") == 0)
         {
             multithreading = 1;
-            printf("running with multithreading option\n\n");
+            //printf("running with multithreading option\n\n");
         }
         else
         {
@@ -248,13 +215,13 @@ int main(int argc, char *argv[])
         {
             // create threads here
             // pass the address of an int, cast to a void pointer
-            printf("passing index: %d\n", indexValue);
+            //printf("passing index: %d\n", indexValue);
             pthread_create(&threadID[cityIndex], NULL, ProcessFile, (void*)&indexValue);
         }
         else // if in linear mode
         {
             ProcessFile(&indexValue);
-            printf("linear call\n");
+            //printf("linear call\n");
         }
     }
 
@@ -268,7 +235,7 @@ int main(int argc, char *argv[])
     }
 
     clock_t programClock = clock();
-    printf("\n%li\nProgram finished.\n", programClock);
+    printf("%li\n", programClock);
 
     return 0;
 }
