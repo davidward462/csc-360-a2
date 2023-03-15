@@ -10,6 +10,8 @@
 #define NAME_INDEX 0
 #define OPTION_INDEX 1
 
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
 // This is global now
 char *fileNames[NUM_OF_FILES] = 
 {
@@ -125,10 +127,14 @@ void *ProcessFile(void *cityIndex)
     // cityIndex is actually an address (specifically a void pointer), but we want to make it an int. 
     // First cast cityIndex to an int pointer, then access it's value (an address).
     int index = *(int *)cityIndex;
-    printf("index: %d\n", index);
+    printf("recieved index: %d\n", index);
 
     // open file
+    // possible critical section
+    pthread_mutex_lock(&mutex);
     char *filePath = Concat(fileDirectory, fileNames[index]); // create path
+    pthread_mutex_unlock(&mutex);
+
     fd = fopen(filePath,"r"); // open file for reading
 
     // check error on file opening
@@ -256,6 +262,7 @@ int main(int argc, char *argv[])
         else // if in linear mode
         {
             ProcessFile(&indexValue);
+            printf("linear call\n");
         }
     }
 
