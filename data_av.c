@@ -211,7 +211,6 @@ void *ProcessFile(void *cityIndex)
     // TODO: made change from linesRead to linesProcessed
     PrintCityData(filePath, minTemp, maxTemp, averageTemp, linesRead);
 
-    return NULL;
 
 }
 
@@ -246,6 +245,11 @@ int main(int argc, char *argv[])
     // set up for threads
     pthread_t *threadID;
     threadID = (pthread_t *) malloc(sizeof(pthread_t) * NUM_OF_FILES);
+
+    // return values
+    // Create variable to hold pointers which are each the size of addresses to the structs.
+    struct summaryData **summaryArray = malloc(NUM_OF_FILES * sizeof(struct summaryData *));
+
   
     // open and process files
     for(int cityIndex = 0; cityIndex < NUM_OF_FILES; cityIndex++)
@@ -266,12 +270,16 @@ int main(int argc, char *argv[])
         }
     }
 
+    // what is this?
+    // "pointer to the array"
+    struct summaryData ***p = &summaryArray;
+
     // synchronize join of all files
     if(multithreading)
     {
         for(int i = 0; i < NUM_OF_FILES; i++)
         {
-            pthread_join(threadID[i], NULL);
+            pthread_join(threadID[i], (void **)&p);
         }
     }
 
