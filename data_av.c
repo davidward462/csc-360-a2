@@ -12,8 +12,13 @@
 
 // Global variables
 float globalMinTemp, globalMaxTemp;
-int globalLinesRead = 0;
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+long globalLinesRead = 0;
+int global_filesRead = 0;;
+
+pthread_mutex_t min_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t max_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t lines_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t files_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 char *fileNames[NUM_OF_FILES] = 
 {
@@ -143,12 +148,12 @@ void *ProcessFile(void *cityIndex)
                     maxTemp = currentValue; 
                     
                     // critical section begin
-                    pthread_mutex_lock(&mutex); 
+                    pthread_mutex_lock(&max_mutex); 
                     if (maxTemp > globalMaxTemp)
                     {
                         globalMaxTemp = maxTemp;
                     }
-                    pthread_mutex_unlock(&mutex); 
+                    pthread_mutex_unlock(&max_mutex); 
                     // critical section end
                 }
             }
@@ -165,12 +170,12 @@ void *ProcessFile(void *cityIndex)
                     minTemp = currentValue;
                     
                     // critical section begin
-                    pthread_mutex_lock(&mutex); 
+                    pthread_mutex_lock(&min_mutex); 
                     if (minTemp < globalMinTemp)
                     {
                         globalMinTemp = minTemp;
                     }
-                    pthread_mutex_unlock(&mutex); 
+                    pthread_mutex_unlock(&min_mutex); 
                     // critical section end
                 }
             }
@@ -188,13 +193,19 @@ void *ProcessFile(void *cityIndex)
         }
         
         linesRead++; // TODO: don't increment on empty lines
-
-        // begin critical section
-        pthread_mutex_lock(&mutex); 
-        globalLinesRead = globalLinesRead + linesRead;
-        pthread_mutex_unlock(&mutex); 
-        // end critical section
     }
+
+    // begin critical section
+    pthread_mutex_lock(&lines_mutex); 
+    globalLinesRead = globalLinesRead + linesRead;
+    pthread_mutex_unlock(&lines_mutex); 
+    // end critical section
+
+    // begin critical section
+    pthread_mutex_lock(&files_mutex);
+    global_filesRead++;
+    pthread_mutex_unlock(&files_mutex);
+    // end critical section
 
     averageTemp = averageTemp / linesRead; // calculate average
 
@@ -269,9 +280,11 @@ int main(int argc, char *argv[])
 
     // print global data
     PrintSeparator(40);
+    printf("\nTotal lines read: %li", globalLinesRead);
     printf("\nHighest temperature overall: %f", globalMaxTemp);
     printf("\nLowest temperature overall: %f", globalMinTemp);
     printf("\nElapsed time: %li\n", programClock);
+    printf("\n\nTotal files read: %d", global_filesRead);
 
     return 0;
 }
