@@ -1,0 +1,4 @@
+reading linearResults.txt...
+lines read: 200
+mean: 85066.80
+standard deviation: 5890.21
