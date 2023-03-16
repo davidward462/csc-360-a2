@@ -8,12 +8,15 @@
 
 #define NUM_OF_FILES 10
 #define NAME_INDEX 0
-#define OPTION_INDEX 1
+#define MULTITHREAD_INDEX 1
+#define PRINT_INDEX 2
 
 // Global variables
 float globalMinTemp, globalMaxTemp;
 long globalLinesRead = 0;
 int global_filesRead = 0;;
+int multithreading = 0;
+int statsPrint = 0;
 
 pthread_mutex_t min_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t max_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -120,7 +123,6 @@ void *ProcessFile(void *cityIndex)
     // read title line and ignore
     getline(&line, &lineLength, fd);
     linesRead++;
-
     
     // new block
     while((getlineResult = getline(&line, &lineLength, fd)) != -1) // while result of getline() is not -1
@@ -199,7 +201,10 @@ void *ProcessFile(void *cityIndex)
 
     free(line); 
 
-    PrintCityData(filePath, minTemp, maxTemp, averageTemp, linesRead);
+    if( statsPrint == 0)
+    {
+        PrintCityData(filePath, minTemp, maxTemp, averageTemp, linesRead);
+    }
     
     return NULL;
 
@@ -208,7 +213,8 @@ void *ProcessFile(void *cityIndex)
 int main(int argc, char *argv[])
 {
     // set variables
-    int multithreading = 0;
+    //int multithreading = 0;
+    //int statsPrint = 0;
     int fdList[NUM_OF_FILES];
 
 
@@ -222,14 +228,22 @@ int main(int argc, char *argv[])
     // if there is a option
     if(argc == 2)
     {
-        if(strcmp(argv[OPTION_INDEX], "-m") == 0)
+        if(strcmp(argv[1], "-m") == 0)
         {
             multithreading = 1;
         }
-        else
+        
+        if(strcmp(argv[1], "-p") == 0)
         {
-            printf("option '%s' not recognized\n", argv[OPTION_INDEX]);
+           statsPrint = 1;
         }
+
+        if(strcmp(argv[1], "-mp") == 0)
+        {
+           statsPrint = 1;
+           multithreading = 1;
+        }
+        
     }
 
     // set up for threads
@@ -266,13 +280,20 @@ int main(int argc, char *argv[])
 
     clock_t programClock = clock();
 
-    // print global data
-    PrintSeparator(40);
-    printf("\nTotal lines read: %li", globalLinesRead);
-    printf("\nHighest temperature overall: %f", globalMaxTemp);
-    printf("\nLowest temperature overall: %f", globalMinTemp);
-    printf("\nElapsed time: %li\n", programClock);
-    printf("\nTotal files read: %d\n", global_filesRead);
+    if(statsPrint == 0)
+    {
+        // print global data
+        PrintSeparator(40);
+        printf("\nTotal lines read: %li", globalLinesRead);
+        printf("\nHighest temperature overall: %f", globalMaxTemp);
+        printf("\nLowest temperature overall: %f", globalMinTemp);
+        printf("\nElapsed time: %li\n", programClock);
+        printf("\nTotal files read: %d\n", global_filesRead);
+    }
+    else
+    {
+        printf("%li\n", programClock);
+    }
 
     return 0;
 }
