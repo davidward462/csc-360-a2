@@ -137,11 +137,8 @@ void *ProcessFile(void *cityIndex)
 
             if(isMaxColumn)
             {
-                
-                if(linesRead < 2) // if reading first line of values
-                {
-                    maxTemp = currentValue; 
-                }
+                // if reading first line of values
+                if(linesRead < 2) { maxTemp = currentValue; }
 
                 if(currentValue > maxTemp)
                 {
@@ -159,11 +156,8 @@ void *ProcessFile(void *cityIndex)
             }
             else
             {
-                
-                if(linesRead < 2) // if reading first line of values
-                {
-                    minTemp = currentValue; 
-                }
+                // if reading first line of values
+                if(linesRead < 2) { minTemp = currentValue; }
 
                 if(currentValue < minTemp)
                 {
@@ -182,14 +176,8 @@ void *ProcessFile(void *cityIndex)
 
             ptr = rest;
             // next column
-            if(isMaxColumn)
-            {
-                isMaxColumn = 0;
-            }
-            else
-            {
-                isMaxColumn = 1;
-            }
+            if(isMaxColumn) { isMaxColumn = 0; }
+            else { isMaxColumn = 1; }
         }
         
         linesRead++; // TODO: don't increment on empty lines
@@ -284,7 +272,7 @@ int main(int argc, char *argv[])
     printf("\nHighest temperature overall: %f", globalMaxTemp);
     printf("\nLowest temperature overall: %f", globalMinTemp);
     printf("\nElapsed time: %li\n", programClock);
-    printf("\n\nTotal files read: %d", global_filesRead);
+    printf("\nTotal files read: %d\n", global_filesRead);
 
     return 0;
 }
