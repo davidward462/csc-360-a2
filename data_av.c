@@ -23,6 +23,7 @@ pthread_mutex_t min_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t max_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t lines_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t files_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t print_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 char *cityNames[NUM_OF_FILES] = 
 {
@@ -213,7 +214,11 @@ void *ProcessFile(void *cityIndex)
 
     if( statsPrint == 0)
     {
+        // begin critical section
+        pthread_mutex_lock(&print_mutex);
         PrintCityData(city, minTemp, maxTemp, averageTemp, linesRead);
+        pthread_mutex_unlock(&print_mutex);
+        // end critical section
     }
     
     return NULL;
