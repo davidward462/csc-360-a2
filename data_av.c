@@ -112,8 +112,10 @@ void *ProcessFile(void *cityIndex)
     float averageTemp = 0.0; // needs to be assigned to
     char *endptr;
 
-
-    printf("\nrecieved index: %d\n", index);
+    if(statsPrint == 0)
+    {
+        printf("\nrecieved index: %d\n", index);
+    }
 
     // open file
     char *fileName = Concat(city, fileType);            // create complete file name
@@ -221,10 +223,7 @@ void *ProcessFile(void *cityIndex)
 int main(int argc, char *argv[])
 {
     // set variables
-    //int multithreading = 0;
-    //int statsPrint = 0;
     int fdList[NUM_OF_FILES];
-
 
     // check number of arguments
     if(argc > 2)
@@ -265,15 +264,18 @@ int main(int argc, char *argv[])
 
         if(multithreading) // multithreading mode
         {
+            if(statsPrint == 0)
+            {
+                printf("passing index: %d\n", indexValue);
+            }
+
             // create threads here
             // pass the address of an int, cast to a void pointer
-            printf("passing index: %d\n", indexValue);
             pthread_create(&threadID[cityIndex], NULL, ProcessFile, (void*)&indexValue);
         }
         else // if in linear mode
         {
             ProcessFile(&indexValue);
-            //printf("linear call\n");
         }
     }
 
