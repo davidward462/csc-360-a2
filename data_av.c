@@ -18,24 +18,25 @@ int global_filesRead = 0;;
 int multithreading = 0;
 int statsPrint = 0;
 
+// initialize mutexes
 pthread_mutex_t min_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t max_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t lines_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t files_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-char *fileNames[NUM_OF_FILES] = 
+char *cityNames[NUM_OF_FILES] = 
 {
     // alphabetical order
-    "Charlottetown.dat", 
-    "Edmonton.dat",
-    "Halifax.dat",
-    "Montreal.dat",
-    "Ottawa.dat",
-    "Quebec.dat",
-    "Toronto.dat",
-    "Vancouver.dat",
-    "Victoria.dat",
-    "Winnipeg.dat"
+    "Charlottetown", 
+    "Edmonton",
+    "Halifax",
+    "Montreal",
+    "Ottawa",
+    "Quebec",
+    "Toronto",
+    "Vancouver",
+    "Victoria",
+    "Winnipeg"
 };
 
 // function prototypes
@@ -80,12 +81,21 @@ char *Concat(char *string1, char *string2)
 }
 
 
-// open and read file, and calculate required values
+// Open and read file, and calculate required values.
+// Can run on a thread.
 void *ProcessFile(void *cityIndex)
 {
-    // reading files
+    // cityIndex is an address (a void pointer), but we need an int. 
+    // First cast cityIndex to an int pointer, then access it's value (an address).
+    int index = *(int *)cityIndex;
+
+    // opening file
     FILE *fd;
-    char *fileDirectory= "data_files/";     // location of files
+    char *fileDirectory = "data_files/";     // location of files
+    char *fileType = ".dat";     // file suffix
+    char *city = cityNames[index];
+
+    // reading file
     char *line = NULL;          // line we read from the file
     size_t lineLength = 0;
     ssize_t getlineResult;
@@ -102,15 +112,12 @@ void *ProcessFile(void *cityIndex)
     float averageTemp = 0.0; // needs to be assigned to
     char *endptr;
 
-    // handle argument
-    // cityIndex is actually an address (specifically a void pointer), but we want to make it an int. 
-    // First cast cityIndex to an int pointer, then access it's value (an address).
-    int index = *(int *)cityIndex;
 
     printf("\nrecieved index: %d\n", index);
 
     // open file
-    char *filePath = Concat(fileDirectory, fileNames[index]); // create path
+    char *fileName = Concat(city, fileType);            // create complete file name
+    char *filePath = Concat(fileDirectory, fileName);   // create path
 
     fd = fopen(filePath,"r"); // open file for reading
 
@@ -204,7 +211,7 @@ void *ProcessFile(void *cityIndex)
 
     if( statsPrint == 0)
     {
-        PrintCityData(filePath, minTemp, maxTemp, averageTemp, linesRead);
+        PrintCityData(city, minTemp, maxTemp, averageTemp, linesRead);
     }
     
     return NULL;
