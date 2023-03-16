@@ -106,7 +106,8 @@ void *ProcessFile(void *cityIndex)
     // cityIndex is actually an address (specifically a void pointer), but we want to make it an int. 
     // First cast cityIndex to an int pointer, then access it's value (an address).
     int index = *(int *)cityIndex;
-    //printf("recieved index: %d\n", index);
+
+    printf("\nrecieved index: %d\n", index);
 
     // open file
     char *filePath = Concat(fileDirectory, fileNames[index]); // create path
@@ -259,7 +260,7 @@ int main(int argc, char *argv[])
         {
             // create threads here
             // pass the address of an int, cast to a void pointer
-            //printf("passing index: %d\n", indexValue);
+            printf("passing index: %d\n", indexValue);
             pthread_create(&threadID[cityIndex], NULL, ProcessFile, (void*)&indexValue);
         }
         else // if in linear mode
