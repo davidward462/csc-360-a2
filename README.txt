@@ -20,6 +20,16 @@ $ ./data_av -m
 
 ----- Execution time -----
 
+Linear execution:
+n = 200
+mean: 84372.14 clock cycles
+standard deviation: 2482.46
+
+Multithreding:
+n = 200
+mean: 130840.18
+standard deviation: 8543.43 clock cycles
+
 ----- Synchronization issues -----
 
 The non-multithreaded function of the program did not have any issues at any point.
@@ -29,3 +39,5 @@ Early in development, my process_file() function took the file path (e.g. data_f
 This new structure of process_file() now caused syncronization issues, where it seemed some city files were read more than once, and their data was printed multiple times. Generally this will be on index 9, the final iteration of the loop. 
 
 ----- Inconsistenties -----
+
+While using multithreading, the main error was that some of the print statements showed the wrong files being read, specifically the last file output being duplicated throughout the output.

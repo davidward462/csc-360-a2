@@ -62,6 +62,7 @@ void PrintSeparator(int count)
     }
 }
 
+// TODO: might not be needed
 // Print data gathered and calculated for each city file.
 void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, int linesProcessed)
 {
@@ -218,30 +219,20 @@ void *ProcessFile(void *cityIndex)
 
     free(line); 
 
-    // begin critical section
-    pthread_mutex_lock(&print_mutex);
-    // begin printing
-    PrintSeparator(40);
-    
-    // Here, "total values" means the number of valid lines processed. Not individual numbers.
-        printf("\nData for: %s city\n%s's highest temperature: %2.3f\n%s's lowest temperature: %2.3f\n%s's average temperature: %2.3f\nTotal values processed for %s is: %d\n",city,city,maxTemp,city,minTemp,city,averageTemp,city,linesRead);
-    // end printing
-    pthread_mutex_unlock(&print_mutex);
-    // end critical section
 
-
-    /**
-    if( statsPrint == 0)
+    if(statsPrint == 0)
     {
         // begin critical section
         pthread_mutex_lock(&print_mutex);
-        PrintCityData(city, minTemp, maxTemp, averageTemp, linesRead);
+        // begin printing
+        PrintSeparator(40);
+        
+        // Here, "total values" means the number of valid lines processed. Not individual numbers.
+            printf("\nData for: %s city\n%s's highest temperature: %2.3f\n%s's lowest temperature: %2.3f\n%s's average temperature: %2.3f\nTotal values processed for %s is: %d\n",city,city,maxTemp,city,minTemp,city,averageTemp,city,linesRead);
+        // end printing
         pthread_mutex_unlock(&print_mutex);
         // end critical section
     }
-    **/
-    
-
 }
 
 int main(int argc, char *argv[])
@@ -312,16 +303,6 @@ int main(int argc, char *argv[])
         }
     }
 
-    /**
-    // synchronize join of all files
-    if(multithreading)
-    {
-        for(int i = 0; i < NUM_OF_FILES; i++)
-        {
-            pthread_join(threadID[i], NULL);
-        }
-    }
-    **/
 
     clock_t programClock = clock();
 
