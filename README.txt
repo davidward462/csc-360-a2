@@ -36,9 +36,9 @@ standard deviation: 8543.43 clock cycles
 
 The non-multithreaded function of the program did not have any issues at any point.
 
-Early in development, my process_file() function took the file path (e.g. data_files/Victoria.dat) and it seemed to work without issues when using multithreading mode. However, in order to use locks, and at the recommendation of the professor, I changed process_file() to take an integer which ranged from 0 to 9, which is the index of a global array holding the names of the cities. 
+Initially, my process_file function took the file path as it's argument, at at the time there didn't seem to be any synchronization issues, but I was using locks.
 
-This new structure of process_file() now caused syncronization issues, where it seemed some city files were read more than once, and their data was printed multiple times. Generally this will be on index 9, the final iteration of the loop. 
+I changed the process_file function to take an integer which indicated the city name in a global array. At this time, my multithreading had issues, which was where 10 file info blocks would print, which is the expected number, but the last file (corresponding to the integer 9 in the array) would be what most of them were. As if a thread was running too many times, or was getting the wrong argument. 
 
 ----- Inconsistenties -----
 
