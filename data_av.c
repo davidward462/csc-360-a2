@@ -291,7 +291,6 @@ int main(int argc, char *argv[])
         }
     }
 
-
     clock_t programClock = clock();
 
     if(statsPrint == 0)
@@ -307,6 +306,8 @@ int main(int argc, char *argv[])
     {
         printf("%li\n", programClock);
     }
+    
+    free(threadID);
 
     return 0;
 }
