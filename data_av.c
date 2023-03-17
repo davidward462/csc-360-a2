@@ -24,6 +24,7 @@ pthread_mutex_t max_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t lines_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t files_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t print_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t cityNames_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 char *cityNames[NUM_OF_FILES] = 
 {
@@ -94,7 +95,12 @@ void *ProcessFile(void *cityIndex)
     FILE *fd;
     char *fileDirectory = "data_files/";     // location of files
     char *fileType = ".dat";     // file suffix
+
+    // begin critical section
+    pthread_mutex_lock(&cityNames_mutex); 
     char *city = cityNames[index];
+    pthread_mutex_unlock(&cityNames_mutex); 
+    // end critical section
 
     // reading file
     char *line = NULL;          // line we read from the file
@@ -212,6 +218,19 @@ void *ProcessFile(void *cityIndex)
 
     free(line); 
 
+    // begin critical section
+    pthread_mutex_lock(&print_mutex);
+    // begin printing
+    PrintSeparator(40);
+    
+    // Here, "total values" means the number of valid lines processed. Not individual numbers.
+        printf("\nData for: %s city\n%s's highest temperature: %2.3f\n%s's lowest temperature: %2.3f\n%s's average temperature: %2.3f\nTotal values processed for %s is: %d\n",city,city,maxTemp,city,minTemp,city,averageTemp,city,linesRead);
+    // end printing
+    pthread_mutex_unlock(&print_mutex);
+    // end critical section
+
+
+    /**
     if( statsPrint == 0)
     {
         // begin critical section
@@ -220,8 +239,8 @@ void *ProcessFile(void *cityIndex)
         pthread_mutex_unlock(&print_mutex);
         // end critical section
     }
+    **/
     
-    return NULL;
 
 }
 
