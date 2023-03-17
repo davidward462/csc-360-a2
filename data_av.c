@@ -60,17 +60,6 @@ void PrintSeparator(int count)
     }
 }
 
-// TODO: might not be needed
-// Print data gathered and calculated for each city file.
-void PrintCityData(char *city, float minTemp, float maxTemp, float averageTemp, int linesProcessed)
-{
-    PrintSeparator(40);
-    
-    // Here, "total values" means the number of valid lines processed. Not individual numbers.
-        printf("\nData for: %s city\n%s's highest temperature: %2.3f\n%s's lowest temperature: %2.3f\n%s's average temperature: %2.3f\nTotal values processed for %s is: %d\n",city,city,maxTemp,city,minTemp,city,averageTemp,city,linesProcessed);
-
-    }
-
 // concatenate string1 and string2
 // resultant string must be free()'d when no longer needed!
 char *Concat(char *string1, char *string2)
