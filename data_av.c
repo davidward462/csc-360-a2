@@ -14,6 +14,7 @@
 // Global variables
 float globalMinTemp, globalMaxTemp;
 long globalLinesRead = 0;
+char *globalMaxCity, *globalMinCity;
 int multithreading = 0; // indicate if program will use multithreding
 int statsPrint = 0; // indicate if program will run in stats collection mode (dev only)
 
@@ -23,6 +24,8 @@ pthread_mutex_t max_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t lines_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t print_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t cityNames_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t maxTempCity_mutex= PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t minTempCity_mutex= PTHREAD_MUTEX_INITIALIZER;
 
 char *cityNames[NUM_OF_FILES] = 
 {
@@ -146,14 +149,21 @@ void *ProcessFile(void *cityIndex)
                 {
                     maxTemp = currentValue; 
                     
-                    // critical section begin
-                    pthread_mutex_lock(&max_mutex); 
                     if (maxTemp > globalMaxTemp)
                     {
+                        // critical section begin
+                        pthread_mutex_lock(&max_mutex); 
                         globalMaxTemp = maxTemp;
+                        pthread_mutex_unlock(&max_mutex); 
+                        // critical section end
+                        
+                        // critical section begin
+                        pthread_mutex_lock(&maxTempCity_mutex);
+                        globalMaxCity = city;
+                        pthread_mutex_unlock(&maxTempCity_mutex);
+                        // critical section end
+
                     }
-                    pthread_mutex_unlock(&max_mutex); 
-                    // critical section end
                 }
             }
             else
@@ -165,14 +175,21 @@ void *ProcessFile(void *cityIndex)
                 {
                     minTemp = currentValue;
                     
-                    // critical section begin
-                    pthread_mutex_lock(&min_mutex); 
                     if (minTemp < globalMinTemp)
                     {
+                        // critical section begin
+                        pthread_mutex_lock(&min_mutex); 
                         globalMinTemp = minTemp;
+                        pthread_mutex_unlock(&min_mutex); 
+                        // critical section end
+
+                        // critical section begin
+                        pthread_mutex_lock(&minTempCity_mutex);
+                        globalMinCity = city;
+                        pthread_mutex_unlock(&minTempCity_mutex);
+                        // critical section end
                     }
-                    pthread_mutex_unlock(&min_mutex); 
-                    // critical section end
+
                 }
             }
 
@@ -282,8 +299,8 @@ int main(int argc, char *argv[])
         // print global data
         PrintSeparator(40);
         printf("\nTotal lines read: %li", globalLinesRead);
-        printf("\nHighest temperature overall: %f", globalMaxTemp);
-        printf("\nLowest temperature overall: %f", globalMinTemp);
+        printf("\nHighest temperature overall: %f in %s", globalMaxTemp, globalMaxCity);
+        printf("\nLowest temperature overall: %f in %s", globalMinTemp, globalMinCity);
         printf("\nElapsed time: %li\n", programClock);
     }
     else
