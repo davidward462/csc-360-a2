@@ -21,13 +21,15 @@ $ ./data_av -m
 ----- Execution time -----
 
 Linear execution:
-n = 200
+
+Program run 200 times
 mean: 84372.14 clock cycles
 standard deviation: 2482.46
 
 Multithreding:
-n = 200
-mean: 130840.18
+
+Program run 200 times
+mean: 130840.18 clock cycles
 standard deviation: 8543.43 clock cycles
 
 ----- Synchronization issues -----

@@ -14,15 +14,13 @@
 // Global variables
 float globalMinTemp, globalMaxTemp;
 long globalLinesRead = 0;
-int global_filesRead = 0;;
-int multithreading = 0;
-int statsPrint = 0;
+int multithreading = 0; // indicate if program will use multithreding
+int statsPrint = 0; // indicate if program will run in stats collection mode (dev only)
 
 // initialize mutexes
 pthread_mutex_t min_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t max_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t lines_mutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t files_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t print_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t cityNames_mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -120,11 +118,6 @@ void *ProcessFile(void *cityIndex)
     float averageTemp = 0.0; // needs to be assigned to
     char *endptr;
 
-    if(statsPrint == 0)
-    {
-        printf("\nrecieved index: %d\n", index);
-    }
-
     // open file
     char *fileName = Concat(city, fileType);            // create complete file name
     char *filePath = Concat(fileDirectory, fileName);   // create path
@@ -209,12 +202,6 @@ void *ProcessFile(void *cityIndex)
     pthread_mutex_unlock(&lines_mutex); 
     // end critical section
 
-    // begin critical section
-    pthread_mutex_lock(&files_mutex);
-    global_filesRead++;
-    pthread_mutex_unlock(&files_mutex);
-    // end critical section
-
     averageTemp = averageTemp / linesRead; // calculate average
 
     free(line); 
@@ -279,11 +266,6 @@ int main(int argc, char *argv[])
 
         if(multithreading) // multithreading mode
         {
-            if(statsPrint == 0)
-            {
-                printf("passing index: %d\n", indexValue);
-            }
-
             // create threads here
             // pass the address of an int, cast to a void pointer
             pthread_create(&threadID[cityIndex], NULL, ProcessFile, (void*)&indexValue);
@@ -314,7 +296,6 @@ int main(int argc, char *argv[])
         printf("\nHighest temperature overall: %f", globalMaxTemp);
         printf("\nLowest temperature overall: %f", globalMinTemp);
         printf("\nElapsed time: %li\n", programClock);
-        printf("\nTotal files read: %d\n", global_filesRead);
     }
     else
     {
