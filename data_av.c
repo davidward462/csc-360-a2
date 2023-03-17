@@ -301,8 +301,18 @@ int main(int argc, char *argv[])
         {
             ProcessFile(&indexValue);
         }
+
+        // synchronize join of all files
+        if(multithreading)
+        {
+            for(int i = 0; i < NUM_OF_FILES; i++)
+            {
+                pthread_join(threadID[i], NULL);
+            }
+        }
     }
 
+    /**
     // synchronize join of all files
     if(multithreading)
     {
@@ -311,6 +321,7 @@ int main(int argc, char *argv[])
             pthread_join(threadID[i], NULL);
         }
     }
+    **/
 
     clock_t programClock = clock();
 
