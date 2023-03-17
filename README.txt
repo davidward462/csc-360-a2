@@ -44,7 +44,7 @@ I changed the process_file function to take an integer which indicated the city 
 
 I added locks onto my global variables, thinking they may be causing issues, but that did not fix it. I added an extra variable defined within the for-loop which was creating the threads, assuming the index in the for-loop was changing, but the bug remained. Eventually I moved the position of my pthread_join function to be inside the for-loop where the threads were being created, and that fixed the problem. 
 
-I think the problem was that threads were not allowed to return until after all the threads had first been created. This caused the last thread to 
+The problem was that threads were not allowed to return until after all the threads had first been created. I think multiple threads were trying to join the same thread at once, which the man page says can result in undefinied behaviour.
 
 ----- Inconsistenties -----
 
