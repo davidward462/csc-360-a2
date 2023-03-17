@@ -36,9 +36,9 @@ standard deviation: 8543.43 clock cycles
 
 The non-multithreaded function of the program did not have any issues at any point.
 
-Initially, my process_file function took the file path as it's argument, at at the time there didn't seem to be any synchronization issues, but I was using locks.
+Initially, my process_file function took the file path as it's argument, at at the time there didn't seem to be any synchronization issues, but I was not using locks.
 
-I changed the process_file function to take an integer which indicated the city name in a global array. At this time, my multithreading had issues, which was where 10 file info blocks would print, which is the expected number, but the last file (corresponding to the integer 9 in the array) would be what most of them were. As if a thread was running too many times, or was getting the wrong argument. 
+I changed the process_file function to take an integer which indicated the city name in a global array. At this time, my multithreading had issues, which was where 10 file info blocks would print, which is the expected number, but the last file (corresponding to the integer 9 in the array) would be what most of them were. As if a thread was running too many times, or was getting the wrong argument and therefore opening the wrong file.
 
 ----- Inconsistenties -----
 
